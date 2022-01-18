@@ -1,6 +1,6 @@
 const config = {
 
-  port: 3003,
+  port: 3004,
 
   database: {
     DATABASE: 'koa_demo',
