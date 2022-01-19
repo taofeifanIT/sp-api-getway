@@ -8,5 +8,12 @@ module.exports = {
         let userResult = await tokenInfoService.getAccessTokenInfo(req_querystring)
         ctx.body = userResult
     },
-  
+
+    async indexPage ( ctx ) {
+        const title = 'admin page'
+        await ctx.render('admin', {
+          title,
+        })
+    },
+
   }

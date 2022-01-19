@@ -6,7 +6,7 @@ const router = require('koa-router')()
 const authInfoController = require('../controllers/auth')
 
 const routers = router
-  .get('/user/getAccessToken', authInfoController.getAccessTokenInfo)
+  .get('/auth/getAccessToken', authInfoController.getAccessTokenInfo)
  
   
 module.exports = routers
