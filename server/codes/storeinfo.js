@@ -2,7 +2,7 @@
  * 逻辑文案管理
  */
 
-const tokenInfo = [
+const STOREINFO = [
   {
     storeId: 1,
     ip: 'https://vl-multi.itmars.net/'
@@ -27,4 +27,4 @@ const tokenInfo = [
 
 
 
-module.exports = tokenInfo
+module.exports = STOREINFO

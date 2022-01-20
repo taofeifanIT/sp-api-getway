@@ -5,27 +5,36 @@ const views = require('koa-views')
 const koaStatic = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 const koaLogger = require('koa-logger')
-// const session = require('koa-session-minimal')
-// const MysqlStore = require('koa-mysql-session')
-
+const Moment = require("moment");
+const StoreInfo = require("./codes/storeinfo")
 const config = require('./../config')
 const routers = require('./routers/index')
 
+
 const app = new Koa()
 
-// session存储配置
-// const sessionMysqlConfig= {
-//   user: config.database.USERNAME,
-//   password: config.database.PASSWORD,
-//   database: config.database.DATABASE,
-//   host: config.database.HOST,
-// }
+// 白名单
+const WHITELIST = ['/test','/error','/error/error_store','/']
 
-// 配置session中间件
-// app.use(session({
-//   key: 'USER_SID',
-//   store: new MysqlStore(sessionMysqlConfig)
-// }))
+
+function localFilter(ctx) {
+  let url = ctx.originalUrl
+  console.info(Moment().format('YYYY-MM-DD HH:mm:ss') + '---------' +url)
+  if (WHITELIST.indexOf(url) > -1) {
+      // console.info('当前地址可直接访问')
+  }else {
+      let request = ctx.request
+      let {storeId, refreshToken} = request.query
+      if (!storeId || !refreshToken){
+        ctx.redirect('/error')
+      } else {
+        let storeItem = StoreInfo.find(item => item.storeId == storeId)
+        if(!storeItem){
+          ctx.redirect('/error/error_store')
+        }
+      }
+  }
+}
 
 // 配置控制台日志中间件
 app.use(koaLogger())
@@ -42,6 +51,12 @@ app.use(koaStatic(
 app.use(views(path.join(__dirname, './views'), {
   extension: 'ejs'
 }))
+
+// 响应拦截
+app.use(async (ctx, next) => {
+    localFilter(ctx)
+    await next()
+})
 
 // 初始化路由中间件
 app.use(routers.routes()).use(routers.allowedMethods())
